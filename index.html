@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Төрсөн өдрийн мэндчилгээ 🎉</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      text-align: center;
+    background-image: url("https://i.pinimg.com/736x/00/a5/c7/00a5c738fa024e517f1c36c50df2b6c1.jpg");
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 30px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      animation: bounce 1s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .cake {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+      gap: 20px;
+      justify-content: center;
+      margin: 40px 0;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .candle {
+      width: 60px;
+      height: 100px;
+      background: linear-gradient(180deg, #ffd700 0%, #ffed4e 100%);
+      position: relative;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      border: 2px solid #ffc700;
+    }
+
+    .candle:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+    }
+
+    .candle.on {
+      background: linear-gradient(180deg, #ffb700 0%, #ffa500 100%);
+    }
+
+    .flame {
+      width: 20px;
+      height: 30px;
+      background: linear-gradient(180deg, #ff6b00 0%, #ffaa00 100%);
+      border-radius: 50% 50% 40% 40%;
+      position: absolute;
+      top: -35px;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      filter: drop-shadow(0 0 8px #ff6b00);
+      animation: flicker 0.3s infinite;
+    }
+
+    .candle.on .flame {
+      opacity: 1;
+    }
+
+    @keyframes flicker {
+      0%, 100% { transform: translateX(-50%) scaleY(1); }
+      50% { transform: translateX(-50%) scaleY(1.1); }
+    }
+
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      color: #333;
+      padding: 30px 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      animation: popupIn 0.4s ease-out;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .popup.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    @keyframes popupIn {
+      0% {
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 0;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .popup-emoji {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    .popup-text {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #667eea;
+    }
+
+    .counter {
+      font-size: 1.5rem;
+      margin-top: 30px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      display: inline-block;
+    }
+
+    .blow-btn {
+      background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+      color: #333;
+      border: 2px solid #FFB700;
+      padding: 12px 30px;
+      font-size: 1.1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-left: 20px;
+      transition: all 0.3s ease;
+      font-weight: bold;
+      box-shadow: 0 4px 15px rgba(255, 165, 0, 0.3);
+    }
+
+    .blow-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 20px rgba(255, 165, 0, 0.5);
+    }
+
+    .blow-btn:active {
+      transform: scale(0.95);
+    }
+
+    .confetti {
+      position: fixed;
+      pointer-events: none;
+      font-size: 2rem;
+      animation: fall 3s linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .completion-message {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #4caf50;
+      color: white;
+      padding: 20px 40px;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      animation: slideDown 0.5s ease-out;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateX(-50%) translateY(-100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* Popup Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-content {
+      background: white;
+      color: #333;
+      padding: 40px;
+      border-radius: 20px;
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+      box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+      animation: modalSlideIn 0.4s ease-out;
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #f0f0f0;
+      border: none;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close:hover {
+      background: #e0e0e0;
+      transform: rotate(90deg);
+    }
+
+    .modal-emoji {
+      font-size: 4rem;
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #667eea;
+      margin-bottom: 15px;
+    }
+
+    .modal-message {
+      font-size: 1rem;
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .modal-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      margin: 15px 0;
+      max-height: 300px;
+      object-fit: cover;
+    }
+
+    .modal-image-placeholder {
+      width: 100%;
+      height: 250px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      margin: 15px 0;
+      color: white;
+    }
+
+    .modal-description {
+      font-size: 1rem;
+      color: #666;
+      line-height: 1.8;
+      margin: 15px 0;
+      padding: 15px;
+      background: #f5f5f5;
+      border-radius: 8px;
+      text-align: left;
+      font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .cake {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 65px;
+        padding: 40px;
+      }
+
+      .candle {
+        width: 50px;
+        height: 80px;
+      }
+
+      .modal-content {
+        padding: 25px;
+        max-width: 90%;
+      }
+
+      .modal-emoji {
+        font-size: 3rem;
+      }
+
+      .modal-title {
+        font-size: 1.2rem;
+      }
+
+      .modal-message {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🎂 Төрсөн өдрийн мэндчилгээ 🎂</h1>
+
+  <div class="cake" id="cake"></div>
+
+  <div class="counter">
+    <span id="counter">0</span> / 20
+    <button id="blowBtn" class="blow-btn" style="display: none;">💨 Үлээх 💨</button>
+  </div>
+
+  <div class="popup" id="popup">
+    <div class="popup-emoji" id="emoji">🎁</div>
+    <div class="popup-text" id="message">Баярын мэнд!</div>
+  </div>
+
+  <!-- Modal Popup -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <span class="modal-emoji" id="modalEmoji">🎁</span>
+      <div class="modal-title" id="modalTitle">Баярын мэнд!</div>
+      <div class="modal-message" id="modalMessage">Г</div>
+      <div id="modalImageContainer"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const cake = document.getElementById("cake");
+  const popup = document.getElementById("popup");
+  const modal = document.getElementById("modal");
+  const counterDisplay = document.getElementById("counter");
+  const blowBtn = document.getElementById("blowBtn");
+  let litCount = 0;
+
+  // Үлээх товчны click event
+  blowBtn.addEventListener("click", blowOutCandles);
+
+  const surprises = [
+    { emoji: "📘", title: "Шүлэг", message: "Та сайн бэлэг авах сайн байдалтай гэх мэт!", description: "Сэтгэл татаж урам сэргээсэн <br>Уянга хөглөж найраг бичүүлсэн <br>Хүн бүхний хайрийг татах <br>Хосгүй үзэсгэлэн гоо чамд төрсөн өдрийн баярын мэнд" },
+{
+  emoji: "📚",
+  title: "Олон улсын хүүхдийн номын өдөр",
+  message: "📖 Дөрөвдүгээр сарын 2",
+  description: "Дөрөвдүгээр сарын 2-ныг\nӨнөөдөр олон улсын хүүхдийн номын өдөр тохиож байна.\n1967 оноос эхлэн Данийн үлгэрийн зохиолч Ханс Кристиан Андерсений төрсөн өдрийг энэ өдөр болгон тэмдэглэж иржээ."},    
+  {
+  emoji: "🚢",
+  title: "Titanic туршилтын аялал",
+  message: "⚓ Test voyage",
+  description: "RMS Titanic хөлөг 1912 оны 4-р сарын 2-нд анхны туршилтын аяллаа хийсэн.\nЭнэ нь Английн Southampton боомтоос эхэлж, далайд богино хугацаанд туршигдсан."},   
+    
+{
+  emoji: "🥳",
+  title: "Ai Hayasaka төрсөн өдөр",
+  message: "Kaguya-sama: Love is War",
+  image: "https://i.pinimg.com/736x/45/8c/45/458c45275e93edb20813391dba756e1f.jpg"
+},
+  { emoji: "㊙️", title: "himitsu dayo", message: "秘密だよ!", description: "ёхш цү мйжйа ки уишша га гиыхшр ки ёхйбхагш рэй мйшх. дэ аухбуу сү гиыхсйл нэ аүн ги л гү нт лэн ххй." },
+  {
+  emoji: "❤️",
+  title: "Гийгүүлэн",
+  message: "Өнөөдрийн хамгийн үзэсгэлэнтэй хүн",
+  image: "p3.png"
+},
+{
+  emoji: "💙",
+  title: "Аутизмтэй тэмцэх олон улсын өдөр",
+  message: "🌍 Мэдлэг түгээх өдөр",
+  description: "Дөрөвдүгээр сарын 2-нд аутизмын талаар ойлголт нэмэгдүүлэх, дэмжих зорилготой өдөр юм."
+},
+{
+  emoji: "✨",
+  title: "Гийгүүлэн",
+  message: "💫 Гэрэл түгээх өдөр",
+  description: "Гийгүүлэн гэдэг нь мэдлэг, аз жаргал, ухаарал түгээж, бусдын амьдралыг гэрэлтүүлэх утгатай."
+},
+{
+    emoji: "🐱",
+    title: "муурны хурд",
+    message: "⚡ 42 км/ц хурд",
+    description: "Гэрийн муур дээд тал нь 42-48 км/ц хүртэл хурдалж чаддаг нь олимпийн гүйгчдээс ч хурдан гэсэн үг юм.",
+    image:"https://i.pinimg.com/736x/42/98/4b/42984bb3c7a852201caba23517bf2874.jpg"
+  },
+  {
+  emoji: "5️⃣",
+  title: "Өөрчлөлт, эрх чөлөө, шинэ эхлэл",
+  message: "",
+  description: "2006.04.02 нь 5 тоонд бууж, шинэ өөрчлөлт, уян хатан байдал, адал явдалтай холбоотой утгыг илэрхийлнэ."
+},
+{
+  emoji: "Aries",
+  title: "Манлайлагч, эрч хүчтэй, зорилготой",
+  desription: "",
+  message: "",
+  image:"https://i.pinimg.com/1200x/09/04/6c/09046c56c4aebc39eba766f60d47cfcc.jpg"
+},
+{
+    emoji: "🏎️",
+    title: "Cars (Хүүхэлдэйн кино)",
+    message: "🏁 Lightning McQueen",
+    description: "Pixar-ийн алдарт 'Cars' хүүхэлдэйн кино 2006 онд дэлгэцнээ гарч, хүүхэд багачуудын хамгийн дуртай бүтээл болсон."
+  },
+{
+    emoji: "🌸",
+    title: "Сакура цэцэглэлт",
+    message: "Японд 4 дүгээр сарын эхээр Сакура цэцэглэж эхэлдэг. Энэ нь шинэ эхлэл, нөхөрлөл болон нууцхан дурлалын бэлгэдэл болдог байна.",
+    description: "Японд 4 дүгээр сарын эхээр Сакура цэцэглэж эхэлдэг. Энэ нь шинэ эхлэл, нөхөрлөл болон нууцхан дурлалын бэлгэдэл болдог байна.",
+    image:"https://i.pinimg.com/1200x/a8/e0/e4/a8e0e49d0301f8812eb150cdc6bb95e8.jpg"  
+  },
+  {
+    emoji: "🧊",
+    title: "Тэнгэрийн 'Нууц' гэрэл",
+    message: "4 дүгээр сарын эхээр зарим өргөрөгт 'Aurora' буюу туйлын туяа маш тод харагддаг. Энэ нь шөнийн тэнгэрийг хамгийн үзэсгэлэнтэйгээр 'гийгүүлдэг' байгалийн үзэгдэл юм.",
+    image: "https://i.pinimg.com/736x/3a/1e/1a/3a1e1af059b975791bd63f837ee0dc04.jpg"
+  },
+  {
+    emoji: "🕯️",
+    title: "Нууцлаг Гэгээ",
+    message: "✨ Himitsu no Hikari",
+    description: "4 дүгээр сарын 2-нд төрсөн хүмүүс дотоод сэтгэлдээ маш том гэрлийг (hikari) нууж явдаг бөгөөд зөвхөн хамгийн итгэлтэй хүндээ тэр гэрлээ харуулдаг гэдэг."
+  },
+  {
+    emoji: "🎻",
+    title: "2006 оны Сэтгэлийн аялгуу",
+    message: "🎵 Secret Garden",
+    description: "2006 онд 'Secret Garden' хамтлагийн аялгуунууд дэлхий даяар хүмүүсийн сэтгэлийг анагааж байв. Тэдний 'You Raise Me Up' дуу нь тэр жил хамгийн их сонсогдсон бүтээлүүдийн нэг болсон.",
+  },
+  {
+    emoji: "💎",
+    title: "Зүгээр л... оршихуй",
+    message: "🏠 Гийгүүлэн",
+    description: "Заримдаа хүн зүгээр л энэ дэлхий дээр амьд байгаагаараа хэн нэгний амьдралыг гэрэлтүүлж гийгүүлж байдаг."
+  },
+  {
+    emoji: "🔭",
+    title: "2006 оны 'Гэрэлт' дурсамж",
+    message: "✨ Гэрлийн хурд",
+    description: "2006 онд сансар руу хөөрсөн зарим дохио одоо ч алс холын одод руу аялсаар байгаа."
+  },
+  {
+    emoji: "🛰️",
+    title: "Voyager-ийн нууц мессеж",
+    message: "🌌 Сансар дахь 'Сайн байна уу'",
+    description: "2006 онд Voyager 1 хөлөг нарны аймгаас гарах дөхөж байхдаа дэлхий рүү маш сул дохио илгээсэн юм. Тэр дохио нь 'Би энд байна, намайг сонсож байна уу?' гэх шиг..."
+  },
+  {
+    emoji: "🦋",
+    title: "Эффект",
+    message: "🌪️ өөрчлөлт",
+    description: "Нэгэн эрвээхэй жигүүрээ дэлгэхэд л дэлхийн нөгөө талд шуурга болдог гэдэг."
+  }
+  ];
+
+  // 20 лаа үүсгэх
+  for (let i = 0; i < 20; i++) {
+    const candle = document.createElement("div");
+    candle.classList.add("candle");
+    candle.dataset.index = i;
+
+    const flame = document.createElement("div");
+    flame.classList.add("flame");
+
+    candle.appendChild(flame);
+
+    candle.addEventListener("click", () => {
+      const isNowOn = !candle.classList.contains("on");
+      
+      if (isNowOn) {
+        candle.classList.add("on");
+        litCount++;
+      } else {
+        candle.classList.remove("on");
+        litCount--;
+      }
+
+      // Поппуп үзүүлэх (жижиг)
+      const surprise = surprises[i];
+      document.getElementById("emoji").innerText = surprise.emoji;
+      document.getElementById("message").innerText = surprise.message;
+      
+      popup.classList.add("show");
+      setTimeout(() => {
+        popup.classList.remove("show");
+      }, 1500);
+
+      // Modal үзүүлэх (том)
+      showModal(i);
+
+      // Тоо сольсон
+      counterDisplay.innerText = litCount;
+
+      // 3/20 үед үлээх товч үзүүлэх
+      if (litCount === 3) {
+        document.getElementById("blowBtn").style.display = "inline-block";
+      }
+
+      // Бүх лаа асвал баяр!
+      if (litCount === 20) {
+        celebrateCompletion();
+      }
+    });
+
+    cake.appendChild(candle);
+  }
+
+function showModal(index) {
+  const surprise = surprises[index];
+  
+  document.getElementById("modalEmoji").innerText = surprise.emoji;
+  document.getElementById("modalTitle").innerText = surprise.title;
+  document.getElementById("modalMessage").innerText = surprise.message;
+  
+  const imageContainer = document.getElementById("modalImageContainer");
+
+  // 👇 Хэрвээ image байвал зураг харуулна
+  if (surprise.image) {
+    imageContainer.innerHTML = `
+      <img src="${surprise.image}" class="modal-image" alt="image"/>
+    `;
+  } 
+  // 👇 image байхгүй бол description харуулна
+  else if (surprise.description) {
+    imageContainer.innerHTML = `
+      <div class="modal-description">${surprise.description}</div>
+    `;
+  } 
+  else {
+    imageContainer.innerHTML = "";
+  }
+
+  modal.classList.add("show");
+}
+  function closeModal() {
+    modal.classList.remove("show");
+  }
+
+  // Modal гадаа дарахад хаах
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      closeModal();
+    }
+  });
+
+  // ESC товч дарахад хаах
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeModal();
+    }
+  });
+
+function blowOutCandles() {
+  const candles = document.querySelectorAll(".candle.on");
+  let delay = 100;
+
+  candles.forEach((candle) => {
+    setTimeout(() => {
+      candle.classList.remove("on");
+      litCount--;
+      counterDisplay.innerText = litCount;
+    }, delay);
+
+    delay += 150;
+  });
+
+  // Үлээх товчыг нуух
+  blowBtn.addEventListener("click", () => {
+  const candles = document.querySelectorAll(".candle.on");
+  let delay = 100;
+  
+  candles.forEach((candle) => {
+    setTimeout(() => {
+      candle.classList.remove("on");
+      litCount--;
+      counterDisplay.innerText = litCount;
+      
+      // Товч нуугдах
+      if (litCount < 3) {
+        blowBtn.style.display = "none";
+      }
+    }, delay);
+    delay += 150;
+  });
+});
+
+  // 💫 Wish message
+  setTimeout(() => {
+    const wish = document.createElement("div");
+    wish.className = "completion-message";
+    wish.innerText = "💫 Хүсэл мөрөөдлийнхөө зүг... 💫";
+    document.body.appendChild(wish);
+
+    setTimeout(() => {
+      wish.remove();
+    }, 3000);
+  }, delay + 200);
+}
+// 💫 Wish message
+setTimeout(() => {
+  const wish = document.createElement("div");
+  wish.className = "completion-message";
+  wish.innerText = "💫 Хүсэл мөрөөдөлийнхөө зүг... 💫";
+  document.body.appendChild(wish);
+
+  setTimeout(() => {
+    wish.remove();
+  }, 3000);
+}, delay + 200);
+  function celebrateCompletion() {
+    // Мессэж үзүүлэх
+    const message = document.createElement("div");
+    message.className = "completion-message";
+    message.innerText = "🎉 Баяр сайнаа! Бүх лаа асалаа! 🎉";
+    document.body.appendChild(message);
+
+    // Конфетти бүхэлтэй
+    for (let i = 0; i < 30; i++) {
+      const confetti = document.createElement("div");
+      confetti.className = "confetti";
+      confetti.innerText = surprises[Math.floor(Math.random() * surprises.length)].emoji;
+      confetti.style.left = Math.random() * 100 + "%";
+      confetti.style.top = "-50px";
+      confetti.style.animationDelay = Math.random() * 0.5 + "s";
+      document.body.appendChild(confetti);
+    }
+
+    // Устгах
+    setTimeout(() => {
+      message.remove();
+    }, 3000);
+  }
+</script>
+
+</body>
+</html>
